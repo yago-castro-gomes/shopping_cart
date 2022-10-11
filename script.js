@@ -2,6 +2,7 @@
 // experimente passar o mouse sobre o nome das funções e verá que elas possuem descrições! 
 
 // Fique a vontade para modificar o código já escrito e criar suas próprias funções!
+const products = fetchProducts('computador');
 
 /**
  * Função responsável por criar e retornar o elemento de imagem do produto.
@@ -49,6 +50,15 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
   return section;
 };
 
+ const fusionItem = async () => {
+  const item = document.getElementsByClassName('items');
+  const respose = await products;
+  // const create = respose.forEach((product) => createProductItemElement(product));
+  for (let i = 0; i < respose.length; i += 1) {
+    item[0].appendChild(createProductItemElement(respose[i]));
+  }
+ };
+
 /**
  * Função que recupera o ID do produto passado como parâmetro.
  * @param {Element} product - Elemento do produto.
@@ -72,4 +82,6 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
-window.onload = () => { };
+window.onload = () => {
+  fusionItem();
+ };
