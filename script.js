@@ -50,15 +50,6 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
   return section;
 };
 
- const fusionItem = async () => {
-  const item = document.getElementsByClassName('items');
-  const respose = await products;
-  // const create = respose.forEach((product) => createProductItemElement(product));
-  for (let i = 0; i < respose.length; i += 1) {
-    item[0].appendChild(createProductItemElement(respose[i]));
-  }
- };
-
 /**
  * Função que recupera o ID do produto passado como parâmetro.
  * @param {Element} product - Elemento do produto.
@@ -82,6 +73,26 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
+const cartItemClickListener = () => {
+  const btns = document.getElementsByClassName('item__add');
+  const arrayBtn = Array.from(btns);
+  arrayBtn.forEach((btn, i) => {
+    btn.addEventListener('click', async () => {
+      const idItem = document.getElementsByClassName('item_id');
+      const uniqueItem = await fetchItem(idItem[i].innerText);
+      const list = document.getElementsByClassName('cart__items');
+      list[0].appendChild(createCartItemElement(uniqueItem));
+    });
+  });
+};
+
+const fusionItem = async () => {
+  const item = document.getElementsByClassName('items');
+  const respose = await products;
+  respose.forEach((product) => item[0].appendChild(createProductItemElement(product)));
+  cartItemClickListener();
+ };
+
 window.onload = () => {
   fusionItem();
- };
+};
