@@ -57,6 +57,15 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
  */
 const getIdFromProductItem = (product) => product.querySelector('span.id').innerText;
 
+ const clearItemCart = () => {
+   const itemInCart = document.querySelectorAll('li.cart__item');
+   for (let i = 0; i < itemInCart.length; i += 1) {
+      itemInCart[i].addEventListener('click', (e) => {
+        e.target.remove();
+      });
+      }
+   };
+
 /**
  * Função responsável por criar e retornar um item do carrinho.
  * @param {Object} product - Objeto do produto.
@@ -69,22 +78,36 @@ const createCartItemElement = ({ id, title, price }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);
   return li;
 };
 
 const cartItemClickListener = () => {
-  const btns = document.getElementsByClassName('item__add');
-  const arrayBtn = Array.from(btns);
-  arrayBtn.forEach((btn, i) => {
+  const btns = document.querySelectorAll('.item__add');
+  const cart = document.getElementsByClassName('cart__items');
+  const idItem = document.getElementsByClassName('item_id');
+  btns.forEach((btn, i) => {
     btn.addEventListener('click', async () => {
-      const idItem = document.getElementsByClassName('item_id');
       const uniqueItem = await fetchItem(idItem[i].innerText);
-      const list = document.getElementsByClassName('cart__items');
-      list[0].appendChild(createCartItemElement(uniqueItem));
+      cart[0].appendChild(createCartItemElement(uniqueItem));
+      clearItemCart();
     });
   });
 };
+
+const emptyCart = document.querySelector('.empty-cart');
+
+const clearCart = () => {
+  const itemInCart = document.querySelectorAll('li.cart__item');
+  itemInCart.forEach((unique) => {
+    unique.remove();
+  });
+};
+
+emptyCart.addEventListener('click', clearCart);
+
+// const saveStorage = () => {
+//   saveCartItems(createCartItemElement(this));
+// };
 
 const fusionItem = async () => {
   const item = document.getElementsByClassName('items');
