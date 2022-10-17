@@ -50,6 +50,16 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
   return section;
 };
 
+const saveStorage = () => {
+  const itemInCart = document.querySelectorAll('.cart__item');
+  const push = [];
+  for (let i = 0; i < itemInCart.length; i += 1) {
+    push.push(itemInCart[i].outerHTML);
+    saveCartItems(push);
+  }
+};
+// console.log(getSavedCartItems());
+
 /**
  * Função que recupera o ID do produto passado como parâmetro.
  * @param {Element} product - Elemento do produto.
@@ -62,6 +72,7 @@ const getIdFromProductItem = (product) => product.querySelector('span.id').inner
    for (let i = 0; i < itemInCart.length; i += 1) {
       itemInCart[i].addEventListener('click', (e) => {
         e.target.remove();
+        saveStorage();
       });
       }
    };
@@ -78,7 +89,6 @@ const createCartItemElement = ({ id, title, price }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `ID: ${id} | TITLE: ${title} | PRICE: $${price}`;
-  saveCartItems(li.innerText);
   return li;
 };
 
@@ -90,6 +100,7 @@ const cartItemClickListener = () => {
     btn.addEventListener('click', async () => {
       const uniqueItem = await fetchItem(idItem[i].innerText);
       cart[0].appendChild(createCartItemElement(uniqueItem));
+      saveStorage();
       clearItemCart();
     });
   });
@@ -101,14 +112,20 @@ const clearCart = () => {
   const itemInCart = document.querySelectorAll('li.cart__item');
   itemInCart.forEach((unique) => {
     unique.remove();
+    saveStorage();
   });
 };
 
-emptyCart.addEventListener('click', clearCart);
+const loadStorage = () => {
+   const returnSave = getSavedCartItems();
+   const cart = document.getElementsByClassName('cart__items');
+    const li = document.createElement('li');
+    cart[0].appendChild(li);
+    li.outerHTML = returnSave;
+    clearItemCart();
+ };
 
-// const saveStorage = () => {
-//   saveCartItems(createCartItemElement(this));
-// };
+emptyCart.addEventListener('click', clearCart);
 
 const fusionItem = async () => {
   const item = document.getElementsByClassName('items');
@@ -119,4 +136,5 @@ const fusionItem = async () => {
 
 window.onload = () => {
   fusionItem();
+   loadStorage();  
 };
